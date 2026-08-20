@@ -147,3 +147,38 @@ export interface CartItem {
   image: string;
   specsSummary?: string;
 }
+
+export type OrderStatus = 'confirmado' | 'em_cura' | 'em_transporte' | 'entregue';
+
+export interface OrderTrackingStep {
+  title: string;
+  date: string;
+  completed: boolean;
+  current?: boolean;
+}
+
+export interface SimulatedOrder {
+  id: string;
+  orderNumber: string;
+  date: string;
+  status: OrderStatus;
+  statusLabel: string;
+  estimatedDelivery: string;
+  trackingCode?: string;
+  items: {
+    name: string;
+    quantity: number;
+    price: number;
+    image: string;
+    specsSummary?: string;
+    isCustom?: boolean;
+  }[];
+  subtotal: number;
+  shipping: number;
+  total: number;
+  paymentMethod: string;
+  shippingAddress: string;
+  trackingSteps: OrderTrackingStep[];
+  giftWrap?: boolean;
+  giftNote?: string;
+}

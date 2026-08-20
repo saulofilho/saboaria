@@ -15,6 +15,7 @@ import { ReviewsSection } from './components/ReviewsSection';
 import { CartDrawer } from './components/CartDrawer';
 import { ProductDetailModal } from './components/ProductDetailModal';
 import { SoapCalculatorModal } from './components/SoapCalculatorModal';
+import { BotanicalTipOfDay } from './components/BotanicalTipOfDay';
 import { Footer } from './components/Footer';
 import { CartItem, Product, SoapProduct, CustomSoapOrder } from './types';
 import { INITIAL_PRODUCTS } from './data/mockData';
@@ -91,6 +92,28 @@ export default function App() {
     setIsCartOpen(true);
   };
 
+  const handleBatchAddToCart = (items: { name: string; quantity: number; price: number; image: string; specsSummary?: string; isCustom?: boolean }[]) => {
+    const updatedCart = [...cartItems];
+    items.forEach(item => {
+      const idx = updatedCart.findIndex(i => i.name === item.name);
+      if (idx > -1) {
+        updatedCart[idx].quantity += item.quantity;
+      } else {
+        updatedCart.push({
+          id: `item-${Date.now()}-${Math.random().toString(36).slice(2, 6)}`,
+          name: item.name,
+          price: item.price,
+          quantity: item.quantity,
+          image: item.image,
+          specsSummary: item.specsSummary,
+          isCustom: !!item.isCustom
+        });
+      }
+    });
+    setCartItems(updatedCart);
+    showToast(`${items.length} produto(s) adicionado(s) à sua cesta!`);
+  };
+
   const handleUpdateCartQuantity = (id: string, delta: number) => {
     setCartItems(
       cartItems
@@ -132,6 +155,11 @@ export default function App() {
         onOpenCalculator={() => setIsCalculatorOpen(true)}
         searchQuery={searchQuery}
         setSearchQuery={setSearchQuery}
+      />
+
+      {/* Dynamic Botanical Tip of the Day Header */}
+      <BotanicalTipOfDay
+        onNavigateToIngredients={() => scrollToSection('ingredientes')}
       />
 
       {/* Main Content Area */}
@@ -255,6 +283,8 @@ export default function App() {
         onUpdateQuantity={handleUpdateCartQuantity}
         onRemoveItem={handleRemoveCartItem}
         onClearCart={handleClearCart}
+        onBatchAddToCart={handleBatchAddToCart}
+        onNavigateToCatalog={() => scrollToSection('catalogo')}
       />
 
       {/* Toast Notification Alert */}

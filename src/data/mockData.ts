@@ -1,4 +1,4 @@
-import { SoapProduct, IngredientInfo, CustomerReview, CourseModule, VideoTutorial } from '../types';
+import { SoapProduct, IngredientInfo, CustomerReview, CourseModule, VideoTutorial, SimulatedOrder } from '../types';
 
 export const INITIAL_PRODUCTS: SoapProduct[] = [
   {
@@ -944,5 +944,84 @@ export const VIDEO_TUTORIALS: VideoTutorial[] = [
     ],
     equipmentsNeeded: ['Computador ou Celular', 'Calculadora'],
     proTip: 'Nunca venda seu sabonete artesanal puro pelo mesmo preço de um sabonete industrial sintético de supermercado. Posicione seu ateliê como uma experiência de spa botânico e autocuidado de luxo consciente!'
+  }
+];
+
+export const INITIAL_SIMULATED_ORDERS: SimulatedOrder[] = [
+  {
+    id: 'ord-101',
+    orderNumber: 'SAB-2026-8942',
+    date: '18 de Agosto de 2026',
+    status: 'em_transporte',
+    statusLabel: 'Em Transporte Ecológico',
+    estimatedDelivery: '21 de Agosto de 2026',
+    trackingCode: 'ECO-84910284BR',
+    items: [
+      {
+        name: 'Lavanda Francesa & Manteiga de Karité',
+        quantity: 2,
+        price: 34.00,
+        image: 'https://images.unsplash.com/photo-1607006310492-97214953932e?auto=format&fit=crop&w=600&q=80',
+        specsSummary: '125g • Cold Process • Karité & Alfazema'
+      },
+      {
+        name: 'Argila Rosa & Gerânio Egípcio',
+        quantity: 1,
+        price: 36.00,
+        image: 'https://images.unsplash.com/photo-1607006483702-326002f23247?auto=format&fit=crop&w=600&q=80',
+        specsSummary: '130g • Cold Process • Argila Francesa'
+      }
+    ],
+    subtotal: 104.00,
+    shipping: 0.00,
+    total: 112.00,
+    paymentMethod: 'PIX Instantâneo',
+    shippingAddress: 'Alameda dos Ipês, 450 - Apto 82, Jardins, São Paulo - SP',
+    giftWrap: true,
+    giftNote: 'Com muito carinho para um momento de relaxamento e autocuidado botânico!',
+    trackingSteps: [
+      { title: 'Pedido & Pagamento Confirmado', date: '18/08 às 09:20', completed: true },
+      { title: 'Seleção Botânica & Embalagem Kraft', date: '18/08 às 15:40', completed: true },
+      { title: 'Coletado pela Transportadora Verde', date: '19/08 às 11:15', completed: true, current: true },
+      { title: 'Entrega Prevista no Endereço', date: '21/08 até 18:00', completed: false }
+    ]
+  },
+  {
+    id: 'ord-102',
+    orderNumber: 'SAB-2026-6170',
+    date: '28 de Julho de 2026',
+    status: 'entregue',
+    statusLabel: 'Entregue com Sucesso',
+    estimatedDelivery: '04 de Agosto de 2026',
+    trackingCode: 'ECO-61703921BR',
+    items: [
+      {
+        name: 'Sabão Sob Medida (Lote Exclusivo 6x)',
+        quantity: 1,
+        price: 184.00,
+        image: 'https://images.unsplash.com/photo-1600857544200-b2f666a9a2ec?auto=format&fit=crop&w=600&q=80',
+        specsSummary: '6 barras • Karité & Alecrim • Embalagem Cera',
+        isCustom: true
+      },
+      {
+        name: 'Castela Ancestral 100% Oliva Extra Virgem',
+        quantity: 1,
+        price: 39.00,
+        image: 'https://images.unsplash.com/photo-1570172619644-dfd03ed5d881?auto=format&fit=crop&w=600&q=80',
+        specsSummary: '140g • 12 Semanas de Cura'
+      }
+    ],
+    subtotal: 223.00,
+    shipping: 0.00,
+    total: 223.00,
+    paymentMethod: 'Cartão de Crédito (3x)',
+    shippingAddress: 'Rua Bela Cintra, 1200 - São Paulo - SP',
+    giftWrap: false,
+    trackingSteps: [
+      { title: 'Pedido Confirmado', date: '28/07 às 14:10', completed: true },
+      { title: 'Cura & Embalagem Finalizada', date: '30/07 às 16:00', completed: true },
+      { title: 'Despachado para Envio', date: '01/08 às 09:30', completed: true },
+      { title: 'Entregue ao Destinatário', date: '04/08 às 15:45', completed: true }
+    ]
   }
 ];
