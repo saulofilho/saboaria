@@ -1,0 +1,6 @@
+{
+  "name": "Ateliê Botânico - Saboaria Artesanal & Cursos",
+  "description": "Loja e ateliê de saboaria artesanal com catálogo botânico, personalizador de barras sob medida, guia de ingredientes, depoimentos de clientes e aulas e tutoriais em vídeo para iniciantes.",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}
