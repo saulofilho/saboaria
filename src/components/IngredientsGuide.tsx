@@ -14,20 +14,24 @@ import {
 } from 'lucide-react';
 import { INGREDIENTS_DATABASE } from '../data/mockData';
 import { IngredientInfo } from '../types';
+import { AromaQuizModal } from './AromaQuizModal';
 
 interface IngredientsGuideProps {
   searchQuery: string;
   onOpenCalculator: () => void;
+  onNavigateToCustomBuilder?: () => void;
 }
 
 export const IngredientsGuide: React.FC<IngredientsGuideProps> = ({
   searchQuery: initialSearchQuery,
-  onOpenCalculator
+  onOpenCalculator,
+  onNavigateToCustomBuilder
 }) => {
   const [selectedCategory, setSelectedCategory] = useState<string>('Todos');
   const [selectedSkinBenefit, setSelectedSkinBenefit] = useState<string>('Todos');
   const [localSearch, setLocalSearch] = useState<string>(initialSearchQuery || '');
   const [activeIngredientModal, setActiveIngredientModal] = useState<IngredientInfo | null>(null);
+  const [isQuizOpen, setIsQuizOpen] = useState<boolean>(false);
 
   const categories = [
     'Todos',
@@ -100,6 +104,37 @@ export const IngredientsGuide: React.FC<IngredientsGuideProps> = ({
         <p className="text-sm text-[#6B5E55] leading-relaxed">
           Conheça as propriedades terapêuticas, nome científico, modo de uso na saponificação e dicas de alquimia de cada planta e óleo nobre do nosso ateliê.
         </p>
+      </div>
+
+      {/* Interactive Aroma & Skin Quiz Banner */}
+      <div 
+        id="aroma-quiz-banner"
+        className="mb-10 bg-gradient-to-r from-[#5C6B47] via-[#4A5738] to-[#3B462C] rounded-3xl p-6 sm:p-8 text-white shadow-md relative overflow-hidden flex flex-col md:flex-row items-center justify-between gap-6"
+      >
+        <div className="space-y-2 relative z-10 max-w-xl text-center md:text-left">
+          <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-white/15 backdrop-blur-xs text-amber-200 text-[11px] font-bold uppercase tracking-wider">
+            <Sparkles className="w-3.5 h-3.5" />
+            <span>Quiz Botânico Personalizado</span>
+          </div>
+          <h3 className="font-serif text-2xl sm:text-3xl font-bold leading-tight">
+            Descubra o Aroma & Ingredientes Ideais para Você
+          </h3>
+          <p className="text-xs sm:text-sm text-emerald-100/90 leading-relaxed">
+            Responda 3 perguntas rápidas sobre seu tipo de pele e preferências aromáticas para receber uma recomendação sob medida do nosso acervo.
+          </p>
+        </div>
+
+        <div className="relative z-10 shrink-0">
+          <button
+            id="start-aroma-quiz-btn"
+            onClick={() => setIsQuizOpen(true)}
+            className="px-6 py-3.5 rounded-2xl bg-[#FAF7F2] hover:bg-white text-[#2C2723] font-bold text-xs sm:text-sm shadow-xl flex items-center gap-2 hover:scale-102 transition-all cursor-pointer"
+          >
+            <Sparkles className="w-4 h-4 text-[#5C6B47]" />
+            <span>Fazer Quiz 'Encontre seu Aroma'</span>
+            <ArrowRight className="w-4 h-4 text-[#5C6B47]" />
+          </button>
+        </div>
       </div>
 
       {/* Filter and Search Toolbar */}
@@ -352,6 +387,21 @@ export const IngredientsGuide: React.FC<IngredientsGuideProps> = ({
           </div>
         </div>
       )}
+
+      {/* Aroma Quiz Modal */}
+      <AromaQuizModal
+        isOpen={isQuizOpen}
+        onClose={() => setIsQuizOpen(false)}
+        onSelectIngredient={(ing) => {
+          setActiveIngredientModal(ing);
+        }}
+        onNavigateToIngredients={() => {
+          // Scroll to ingredients catalog smoothly
+          const el = document.getElementById('ingredientes-section');
+          if (el) el.scrollIntoView({ behavior: 'smooth' });
+        }}
+        onNavigateToCustomBuilder={onNavigateToCustomBuilder}
+      />
 
     </section>
   );

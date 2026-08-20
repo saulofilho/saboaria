@@ -198,6 +198,7 @@ export default function App() {
             <IngredientsGuide
               searchQuery={searchQuery}
               onOpenCalculator={() => setIsCalculatorOpen(true)}
+              onNavigateToCustomBuilder={() => scrollToSection('personalizado')}
             />
           )}
 
