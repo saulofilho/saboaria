@@ -280,7 +280,9 @@ export const INITIAL_PRODUCTS: SoapProduct[] = [
       'https://images.unsplash.com/photo-1546554137-f86b9593a222?auto=format&fit=crop&w=800&q=80',
       'https://images.unsplash.com/photo-1600857544200-b2f666a9a2ec?auto=format&fit=crop&w=800&q=80'
     ],
-    stock: 16
+    stock: 16,
+    isNew: true,
+    releaseBadge: 'Lote Novo'
   },
   {
     id: 'soap-8',
@@ -317,7 +319,51 @@ export const INITIAL_PRODUCTS: SoapProduct[] = [
       'https://images.unsplash.com/photo-1570172619644-dfd03ed5d881?auto=format&fit=crop&w=800&q=80'
     ],
     stock: 11,
-    isSeasonal: true
+    isSeasonal: true,
+    isNew: true,
+    releaseBadge: 'Recém Curado'
+  },
+  {
+    id: 'soap-9',
+    name: 'Manteiga de Murumuru & Flor de Laranjeira',
+    tagline: 'Emoliência aveludada da Amazônia com buquê aromaterápico de Néroli',
+    category: 'Hidratação Profunda',
+    price: 37.00,
+    originalPrice: 42.00,
+    weightGrams: 130,
+    rating: 5.0,
+    reviewsCount: 19,
+    description: 'Nossa mais recente criação do ateliê. Combina a rara manteiga amazônica de murumuru de colheita sustentável com o sublime óleo essencial de Néroli (Flor de Laranjeira) e sementes de papoula. Forma uma película protetora sedosa na pele, preservando a hidratação por até 24 horas.',
+    scentProfile: {
+      intensity: 'Marcante',
+      notes: ['Néroli puro', 'Flor de Laranjeira', 'Petitgrain', 'Madeira clara aveludada'],
+      family: 'Floral Cítrico Nobre'
+    },
+    skinType: ['Pele Seca', 'Pele Sensível', 'Todos os Tipos'],
+    ingredients: [
+      'Manteiga de Murumuru Não Refinada da Amazônia',
+      'Óleo de Girassol Prensado a Frio',
+      'Óleo de Babaçu Orgânico',
+      'Óleo Essencial de Néroli (Citrus aurantium)',
+      'Óleo Essencial de Petitgrain',
+      'Argila Amarela Brasileira',
+      'Sementes de Papoula'
+    ],
+    botanicalBenefits: [
+      'Reparação intensiva de barreira cutânea',
+      'Fragrância nobre com efeito antidepressivo e equilibrante',
+      'Espuma densa e ultra hidratante com toque sedoso',
+      'Excelente retenção hídrica para peles ressecadas'
+    ],
+    saponificationProcess: 'Cold Process (Saponificação a Frio)',
+    curingTimeWeeks: 5,
+    images: [
+      'https://images.unsplash.com/photo-1600857544200-b2f666a9a2ec?auto=format&fit=crop&w=800&q=80',
+      'https://images.unsplash.com/photo-1590439471364-192aa70c0b53?auto=format&fit=crop&w=800&q=80'
+    ],
+    stock: 25,
+    isNew: true,
+    releaseBadge: 'Edição Especial'
   }
 ];
 

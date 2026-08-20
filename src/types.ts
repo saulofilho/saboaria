@@ -25,6 +25,8 @@ export interface SoapProduct {
   stock: number;
   isBestseller?: boolean;
   isSeasonal?: boolean;
+  isNew?: boolean;
+  releaseBadge?: string;
 }
 
 export interface CustomSoapOrder {

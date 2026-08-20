@@ -12,6 +12,7 @@ import {
   Check
 } from 'lucide-react';
 import { SoapProduct } from '../types';
+import { NewReleasesSection } from './NewReleasesSection';
 
 interface ProductCatalogProps {
   products?: SoapProduct[];
@@ -107,6 +108,13 @@ export const ProductCatalog: React.FC<ProductCatalogProps> = ({
   return (
     <section id="catalogo-section" className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
       
+      {/* 3 Most Recent Releases Spotlight */}
+      <NewReleasesSection
+        products={products}
+        onSelectProduct={handleSelectProduct}
+        onAddToCart={onAddToCart}
+      />
+
       {/* Section Header */}
       <div className="flex flex-col md:flex-row md:items-end justify-between gap-4 mb-8">
         <div>
@@ -220,7 +228,13 @@ export const ProductCatalog: React.FC<ProductCatalogProps> = ({
                   
                   {/* Badges Overlay */}
                   <div className="absolute top-3 left-3 flex flex-col gap-1.5 items-start">
-                    {product.isBestseller && (
+                    {product.isNew && (
+                      <span className="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full bg-gradient-to-r from-[#C2593F] to-[#D47E6A] text-white text-[10px] font-extrabold uppercase tracking-wider shadow-xs animate-pulse">
+                        <Sparkles className="w-3 h-3" />
+                        Novo
+                      </span>
+                    )}
+                    {product.isBestseller && !product.isNew && (
                       <span className="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full bg-[#C2593F] text-white text-[10px] font-bold uppercase tracking-wider shadow-xs">
                         <Flame className="w-3 h-3" />
                         Mais Vendido
