@@ -133,6 +133,11 @@ export const Footer: React.FC<FooterProps> = ({ onNavigate }) => {
                     Depoimentos de Clientes
                   </button>
                 </li>
+                <li>
+                  <button onClick={() => onNavigate('admin')} className="text-[#D4A373] hover:underline font-semibold flex items-center gap-1">
+                    <span>Área Administrativa (CMS)</span>
+                  </button>
+                </li>
               </ul>
             </div>
 

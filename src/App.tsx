@@ -17,13 +17,34 @@ import { ProductDetailModal } from './components/ProductDetailModal';
 import { SoapCalculatorModal } from './components/SoapCalculatorModal';
 import { BotanicalTipOfDay } from './components/BotanicalTipOfDay';
 import { Footer } from './components/Footer';
+import { AdminLoginModal } from './components/AdminLoginModal';
+import { ProductFormModal } from './components/ProductFormModal';
+import { AdminCmsDashboard } from './components/AdminCmsDashboard';
 import { CartItem, Product, SoapProduct, CustomSoapOrder } from './types';
-import { INITIAL_PRODUCTS } from './data/mockData';
-import { Sparkles, Check, ShoppingBag } from 'lucide-react';
+import { 
+  getStoredProducts, 
+  saveStoredProducts, 
+  resetStoredProducts 
+} from './utils/productStorage';
+import { 
+  getAdminSession, 
+  clearAdminSession, 
+  AdminUser 
+} from './utils/authStorage';
+import { Sparkles, Check, ShoppingBag, ShieldCheck } from 'lucide-react';
 
 export default function App() {
   const [activeTab, setActiveTab] = useState<string>('catalogo');
   const [searchQuery, setSearchQuery] = useState<string>('');
+
+  // Products State (Dynamically loaded and persisted from localStorage / CMS)
+  const [products, setProducts] = useState<SoapProduct[]>(() => getStoredProducts());
+
+  // Admin CMS Auth & Modal State
+  const [adminUser, setAdminUser] = useState<AdminUser | null>(() => getAdminSession());
+  const [isLoginModalOpen, setIsLoginModalOpen] = useState<boolean>(false);
+  const [isProductFormOpen, setIsProductFormOpen] = useState<boolean>(false);
+  const [editingProduct, setEditingProduct] = useState<SoapProduct | null>(null);
   
   // Cart State
   const [cartItems, setCartItems] = useState<CartItem[]>([
@@ -136,7 +157,105 @@ export default function App() {
     setCartItems([]);
   };
 
+  // CMS Handlers
+  const handleOpenAdminCms = () => {
+    if (adminUser) {
+      setActiveTab('admin');
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+    } else {
+      setIsLoginModalOpen(true);
+    }
+  };
+
+  const handleLoginSuccess = (user: AdminUser) => {
+    setAdminUser(user);
+    setActiveTab('admin');
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+    showToast(`Bem-vindo ao Painel CMS, ${user.name}!`);
+  };
+
+  const handleLogout = () => {
+    clearAdminSession();
+    setAdminUser(null);
+    setActiveTab('catalogo');
+    showToast('Sessão administrativa encerrada.');
+  };
+
+  const handleOpenAddProduct = () => {
+    setEditingProduct(null);
+    setIsProductFormOpen(true);
+  };
+
+  const handleOpenEditProduct = (product: SoapProduct) => {
+    setEditingProduct(product);
+    setIsProductFormOpen(true);
+  };
+
+  const handleSaveProduct = (product: SoapProduct) => {
+    const exists = products.some(p => p.id === product.id);
+    let updated: SoapProduct[];
+    if (exists) {
+      updated = products.map(p => p.id === product.id ? product : p);
+      showToast(`Produto "${product.name}" atualizado com sucesso!`);
+    } else {
+      updated = [product, ...products];
+      showToast(`Nova barra "${product.name}" cadastrada no catálogo!`);
+    }
+    setProducts(updated);
+    saveStoredProducts(updated);
+  };
+
+  const handleDeleteProduct = (productId: string) => {
+    const target = products.find(p => p.id === productId);
+    const updated = products.filter(p => p.id !== productId);
+    setProducts(updated);
+    saveStoredProducts(updated);
+    showToast(`Produto "${target?.name || ''}" removido com sucesso.`);
+  };
+
+  const handleDuplicateProduct = (product: SoapProduct) => {
+    const duplicate: SoapProduct = {
+      ...product,
+      id: `soap-${Date.now()}-${Math.random().toString(36).slice(2, 6)}`,
+      name: `${product.name} (Cópia)`,
+      stock: 15,
+      isNew: true
+    };
+    const updated = [duplicate, ...products];
+    setProducts(updated);
+    saveStoredProducts(updated);
+    showToast(`Cópia de "${product.name}" criada.`);
+  };
+
+  const handleUpdateStock = (productId: string, newStock: number) => {
+    const updated = products.map(p => p.id === productId ? { ...p, stock: newStock } : p);
+    setProducts(updated);
+    saveStoredProducts(updated);
+  };
+
+  const handleResetToDefaults = () => {
+    const reset = resetStoredProducts();
+    setProducts(reset);
+    showToast('Catálogo restaurado aos padrões originais do ateliê.');
+  };
+
+  const handleImportProducts = (imported: SoapProduct[]) => {
+    setProducts(imported);
+    saveStoredProducts(imported);
+    showToast(`${imported.length} produtos importados com sucesso!`);
+  };
+
+  const handlePreviewInStore = (product: SoapProduct) => {
+    setSelectedProductDetail(product);
+    setActiveTab('catalogo');
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  };
+
   const scrollToSection = (tabId: string) => {
+    if (tabId === 'admin' && !adminUser) {
+      setIsLoginModalOpen(true);
+      return;
+    }
     setActiveTab(tabId);
     window.scrollTo({ top: 0, behavior: 'smooth' });
   };
@@ -155,71 +274,115 @@ export default function App() {
         onOpenCalculator={() => setIsCalculatorOpen(true)}
         searchQuery={searchQuery}
         setSearchQuery={setSearchQuery}
+        isAdminLoggedIn={!!adminUser}
+        onOpenAdminCms={handleOpenAdminCms}
       />
 
-      {/* Dynamic Botanical Tip of the Day Header */}
-      <BotanicalTipOfDay
-        onNavigateToIngredients={() => scrollToSection('ingredientes')}
-      />
+      {/* Dynamic Botanical Tip of the Day Header (only shown when not in admin) */}
+      {activeTab !== 'admin' && (
+        <BotanicalTipOfDay
+          onNavigateToIngredients={() => scrollToSection('ingredientes')}
+        />
+      )}
 
       {/* Main Content Area */}
       <main className="flex-1">
         
-        {/* Hero Section */}
-        <HeroSection
-          onExploreCatalog={() => scrollToSection('catalogo')}
-          onOpenCustomBuilder={() => scrollToSection('personalizado')}
-          onOpenClasses={() => scrollToSection('aulas')}
-        />
-
-        {/* View Switcher based on Active Tab */}
-        <div className="space-y-4">
-          
-          {/* Section: Loja / Catálogo */}
-          {isCatalogTab && (
-            <ProductCatalog
-              products={INITIAL_PRODUCTS}
-              onSelectProduct={(product) => setSelectedProductDetail(product)}
-              onAddToCart={(product) => handleAddProductToCart(product, 1)}
-              onCustomizePreset={() => scrollToSection('personalizado')}
-              searchQuery={searchQuery}
+        {/* If Active Tab is Admin CMS */}
+        {activeTab === 'admin' ? (
+          adminUser ? (
+            <AdminCmsDashboard
+              products={products}
+              adminUser={adminUser}
+              onAddProduct={handleOpenAddProduct}
+              onEditProduct={handleOpenEditProduct}
+              onDeleteProduct={handleDeleteProduct}
+              onDuplicateProduct={handleDuplicateProduct}
+              onUpdateStock={handleUpdateStock}
+              onResetToDefaults={handleResetToDefaults}
+              onImportProducts={handleImportProducts}
+              onViewStore={() => scrollToSection('catalogo')}
+              onLogout={handleLogout}
+              onPreviewInStore={handlePreviewInStore}
             />
-          )}
-
-          {/* Section: Custom Soap Builder */}
-          {(activeTab === 'personalizado' || activeTab === 'todos') && (
-            <CustomSoapBuilder
-              onAddCustomOrderToCart={handleAddCustomOrderToCart}
+          ) : (
+            <div className="max-w-md mx-auto py-24 px-4 text-center space-y-4">
+              <div className="w-16 h-16 rounded-3xl bg-[#5C6B47] text-white flex items-center justify-center mx-auto shadow-md">
+                <ShieldCheck className="w-8 h-8 text-[#D4A373]" />
+              </div>
+              <h2 className="font-serif text-2xl font-bold text-[#2C2723]">
+                Painel CMS Restrito
+              </h2>
+              <p className="text-xs text-[#6B5E54]">
+                Para gerenciar o catálogo, criar ou editar barras botânicas e controlar estoque, faça login como administrador.
+              </p>
+              <button
+                onClick={() => setIsLoginModalOpen(true)}
+                className="px-6 py-3 rounded-2xl bg-[#5C6B47] text-white font-bold text-xs shadow-md hover:bg-[#4A5738] transition-colors"
+              >
+                Fazer Login no CMS
+              </button>
+            </div>
+          )
+        ) : (
+          <>
+            {/* Hero Section */}
+            <HeroSection
+              onExploreCatalog={() => scrollToSection('catalogo')}
+              onOpenCustomBuilder={() => scrollToSection('personalizado')}
+              onOpenClasses={() => scrollToSection('aulas')}
             />
-          )}
 
-          {/* Section: Ingredients & Botanical Guide */}
-          {(activeTab === 'ingredientes' || activeTab === 'todos') && (
-            <IngredientsGuide
-              searchQuery={searchQuery}
-              onOpenCalculator={() => setIsCalculatorOpen(true)}
-              onNavigateToCustomBuilder={() => scrollToSection('personalizado')}
-            />
-          )}
+            {/* View Switcher based on Active Tab */}
+            <div className="space-y-4">
+              
+              {/* Section: Loja / Catálogo */}
+              {isCatalogTab && (
+                <ProductCatalog
+                  products={products}
+                  onSelectProduct={(product) => setSelectedProductDetail(product)}
+                  onAddToCart={(product) => handleAddProductToCart(product, 1)}
+                  onCustomizePreset={() => scrollToSection('personalizado')}
+                  searchQuery={searchQuery}
+                />
+              )}
 
-          {/* Section: Online Classes / School for Beginners */}
-          {(activeTab === 'aulas' || activeTab === 'todos') && (
-            <OnlineClasses />
-          )}
+              {/* Section: Custom Soap Builder */}
+              {(activeTab === 'personalizado' || activeTab === 'todos') && (
+                <CustomSoapBuilder
+                  onAddCustomOrderToCart={handleAddCustomOrderToCart}
+                />
+              )}
 
-          {/* Section: Video Step-by-Step Tutorials with Category Search */}
-          {(activeTab === 'tutoriais' || activeTab === 'todos') && (
-            <VideoTutorials
-              searchQuery={searchQuery}
-            />
-          )}
+              {/* Section: Ingredients & Botanical Guide */}
+              {(activeTab === 'ingredientes' || activeTab === 'todos') && (
+                <IngredientsGuide
+                  searchQuery={searchQuery}
+                  onOpenCalculator={() => setIsCalculatorOpen(true)}
+                  onNavigateToCustomBuilder={() => scrollToSection('personalizado')}
+                />
+              )}
 
-          {/* Section: Customer Testimonials & Reviews */}
-          {(activeTab === 'depoimentos' || activeTab === 'todos') && (
-            <ReviewsSection />
-          )}
+              {/* Section: Online Classes / School for Beginners */}
+              {(activeTab === 'aulas' || activeTab === 'todos') && (
+                <OnlineClasses />
+              )}
 
-        </div>
+              {/* Section: Video Step-by-Step Tutorials with Category Search */}
+              {(activeTab === 'tutoriais' || activeTab === 'todos') && (
+                <VideoTutorials
+                  searchQuery={searchQuery}
+                />
+              )}
+
+              {/* Section: Customer Testimonials & Reviews */}
+              {(activeTab === 'depoimentos' || activeTab === 'todos') && (
+                <ReviewsSection />
+              )}
+
+            </div>
+          </>
+        )}
 
       </main>
 
@@ -232,17 +395,21 @@ export default function App() {
           { id: 'aulas', label: 'Aulas' },
           { id: 'tutoriais', label: 'Tutoriais' },
           { id: 'depoimentos', label: 'Depoimentos' },
+          { id: 'admin', label: 'CMS', isCms: true }
         ].map((tab) => (
           <button
             key={tab.id}
             onClick={() => scrollToSection(tab.id)}
-            className={`px-3 py-1.5 rounded-full text-xs font-semibold whitespace-nowrap transition-all ${
-              activeTab === tab.id || (tab.id === 'catalogo' && isCatalogTab)
+            className={`px-3 py-1.5 rounded-full text-xs font-semibold whitespace-nowrap transition-all flex items-center gap-1 ${
+              activeTab === tab.id || (tab.id === 'catalogo' && isCatalogTab && activeTab !== 'admin')
                 ? 'bg-[#5C6B47] text-white shadow-xs'
+                : tab.isCms && adminUser
+                ? 'text-[#D4A373] hover:text-white hover:bg-white/10 font-bold'
                 : 'text-gray-300 hover:text-white hover:bg-white/10'
             }`}
           >
-            {tab.label}
+            {tab.isCms && <ShieldCheck className="w-3 h-3 text-[#D4A373]" />}
+            <span>{tab.label}</span>
           </button>
         ))}
 
@@ -269,6 +436,24 @@ export default function App() {
           }}
         />
       )}
+
+      {/* Admin Login Modal */}
+      <AdminLoginModal
+        isOpen={isLoginModalOpen}
+        onClose={() => setIsLoginModalOpen(false)}
+        onLoginSuccess={handleLoginSuccess}
+      />
+
+      {/* Product Form Modal (Create / Edit in CMS) */}
+      <ProductFormModal
+        isOpen={isProductFormOpen}
+        onClose={() => {
+          setIsProductFormOpen(false);
+          setEditingProduct(null);
+        }}
+        onSave={handleSaveProduct}
+        initialProduct={editingProduct}
+      />
 
       {/* Saponification SAP Calculator Modal */}
       <SoapCalculatorModal

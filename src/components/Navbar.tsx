@@ -11,7 +11,9 @@ import {
   Leaf, 
   Layers, 
   Calculator,
-  PhoneCall
+  PhoneCall,
+  ShieldCheck,
+  Lock
 } from 'lucide-react';
 import { CartItem } from '../types';
 
@@ -23,6 +25,8 @@ interface NavbarProps {
   onOpenCalculator: () => void;
   searchQuery: string;
   setSearchQuery: (query: string) => void;
+  isAdminLoggedIn?: boolean;
+  onOpenAdminCms: () => void;
 }
 
 export const Navbar: React.FC<NavbarProps> = ({
@@ -32,7 +36,9 @@ export const Navbar: React.FC<NavbarProps> = ({
   setIsCartOpen,
   onOpenCalculator,
   searchQuery,
-  setSearchQuery
+  setSearchQuery,
+  isAdminLoggedIn = false,
+  onOpenAdminCms
 }) => {
   const [isScrolled, setIsScrolled] = useState(false);
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
@@ -184,6 +190,31 @@ export const Navbar: React.FC<NavbarProps> = ({
                 <span>Calc SAP</span>
               </button>
 
+              {/* Admin CMS Access Button */}
+              <button
+                id="admin-cms-nav-btn"
+                onClick={onOpenAdminCms}
+                className={`flex items-center gap-1.5 px-3 py-1.5 rounded-full text-xs font-semibold border transition-all ${
+                  isAdminLoggedIn
+                    ? 'bg-[#2C2723] text-[#FAF7F2] border-[#5C6B47] hover:bg-[#3B2F2F]'
+                    : 'bg-[#FAF7F2] text-[#4A3E39] border-[#D4A373]/50 hover:bg-[#EFE9DF]'
+                }`}
+                title={isAdminLoggedIn ? 'Painel CMS Ativo' : 'Entrar no Painel Admin (CMS)'}
+              >
+                {isAdminLoggedIn ? (
+                  <>
+                    <span className="w-2 h-2 rounded-full bg-emerald-400 animate-pulse" />
+                    <ShieldCheck className="w-3.5 h-3.5 text-[#D4A373]" />
+                    <span className="hidden sm:inline">Painel CMS</span>
+                  </>
+                ) : (
+                  <>
+                    <Lock className="w-3 h-3 text-[#8C6D53]" />
+                    <span className="hidden sm:inline">Admin CMS</span>
+                  </>
+                )}
+              </button>
+
               {/* Cart Button */}
               <button
                 id="cart-drawer-trigger"
@@ -248,6 +279,34 @@ export const Navbar: React.FC<NavbarProps> = ({
                 </button>
               );
             })}
+
+            {/* Admin CMS item in Mobile Menu */}
+            <button
+              id="mobile-nav-admin-cms"
+              onClick={() => {
+                onOpenAdminCms();
+                setIsMobileMenuOpen(false);
+              }}
+              className={`w-full text-left px-4 py-3 rounded-xl text-sm font-semibold flex items-center justify-between border transition-all ${
+                activeTab === 'admin'
+                  ? 'bg-[#2C2723] text-white border-[#5C6B47]'
+                  : 'bg-[#EADCC9]/50 text-[#3B2F2F] border-[#D4A373]/50 hover:bg-[#EADCC9]'
+              }`}
+            >
+              <div className="flex items-center gap-3">
+                <ShieldCheck className="w-4 h-4 text-[#5C6B47]" />
+                <span>Painel CMS • Gestão de Catálogo</span>
+              </div>
+              {isAdminLoggedIn ? (
+                <span className="text-[10px] uppercase font-bold tracking-wider px-2 py-0.5 bg-[#5C6B47] text-white rounded-full">
+                  Ativo
+                </span>
+              ) : (
+                <span className="text-[10px] text-[#8C6D53]">
+                  Entrar
+                </span>
+              )}
+            </button>
 
             <div className="pt-3 border-t border-[#E8E1D5] flex items-center justify-between gap-2">
               <button
