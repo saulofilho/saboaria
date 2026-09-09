@@ -25,10 +25,14 @@ import {
   Table as TableIcon,
   LayoutGrid,
   ArrowUpDown,
-  X
+  X,
+  BarChart2,
+  ChevronDown,
+  ChevronUp
 } from 'lucide-react';
 import { SoapProduct } from '../types';
 import { AdminUser } from '../utils/authStorage';
+import { SalesOverviewSection } from './SalesOverviewSection';
 
 interface AdminCmsDashboardProps {
   products: SoapProduct[];
@@ -69,6 +73,9 @@ export const AdminCmsDashboard: React.FC<AdminCmsDashboardProps> = ({
   const [deletingProduct, setDeletingProduct] = useState<SoapProduct | null>(null);
   // Reset confirmation state
   const [isResetConfirmOpen, setIsResetConfirmOpen] = useState(false);
+
+  // Sales Overview Recharts visualization toggle
+  const [isSalesOverviewOpen, setIsSalesOverviewOpen] = useState(true);
 
   // Categories list derived from current products
   const categories = useMemo(() => {
@@ -200,6 +207,21 @@ export const AdminCmsDashboard: React.FC<AdminCmsDashboardProps> = ({
             {/* Top Quick Actions */}
             <div className="flex flex-wrap items-center gap-2.5 sm:gap-3">
               <button
+                id="cms-toggle-sales-overview-btn"
+                onClick={() => setIsSalesOverviewOpen(!isSalesOverviewOpen)}
+                className={`px-3.5 py-2.5 rounded-2xl text-xs font-bold border flex items-center gap-2 transition-all ${
+                  isSalesOverviewOpen
+                    ? 'bg-[#D4A373] text-[#2C2723] border-[#D4A373] shadow-md'
+                    : 'bg-white/10 hover:bg-white/20 text-white border-white/20'
+                }`}
+                title="Alternar gráficos da Visão Geral de Vendas e Estoque"
+              >
+                <BarChart2 className="w-4 h-4" />
+                <span>{isSalesOverviewOpen ? 'Ocultar Visão Geral' : 'Visão Geral de Vendas'}</span>
+                {isSalesOverviewOpen ? <ChevronUp className="w-3.5 h-3.5" /> : <ChevronDown className="w-3.5 h-3.5" />}
+              </button>
+
+              <button
                 id="cms-add-product-btn"
                 onClick={onAddProduct}
                 className="px-4 py-2.5 rounded-2xl bg-[#5C6B47] hover:bg-[#4A5738] text-white text-xs font-bold shadow-lg flex items-center gap-2 transition-transform hover:scale-[1.02] active:scale-[0.98]"
@@ -265,6 +287,11 @@ export const AdminCmsDashboard: React.FC<AdminCmsDashboardProps> = ({
             </div>
           </div>
         </div>
+
+        {/* Section: Sales Overview (Recharts Data Visualization) */}
+        {isSalesOverviewOpen && (
+          <SalesOverviewSection products={products} />
+        )}
 
         {/* Action Toolbar & Filters */}
         <div className="bg-white rounded-2xl p-4 sm:p-5 shadow-xs border border-[#D4A373]/30 space-y-4">
