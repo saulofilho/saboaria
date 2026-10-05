@@ -22,6 +22,7 @@ export interface SoapProduct {
   saponificationProcess: 'Cold Process (Saponificação a Frio)' | 'Hot Process (Cozimento Lento)' | 'Glicerina 100% Vegetal';
   curingTimeWeeks: number;
   images: string[];
+  iconUrl?: string;
   stock: number;
   isBestseller?: boolean;
   isSeasonal?: boolean;

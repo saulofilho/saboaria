@@ -250,6 +250,20 @@ export const ProductCatalog: React.FC<ProductCatalogProps> = ({
                     </span>
                   </div>
 
+                  {/* Botanical Product Icon if provided */}
+                  {product.iconUrl && (
+                    <div 
+                      className="absolute top-3 right-3 bg-white/95 backdrop-blur-xs p-1.5 rounded-xl shadow-sm border border-[#D4A373]/30 flex items-center justify-center transition-transform group-hover:scale-110"
+                      title="Selo Botânico do Produto"
+                    >
+                      <img 
+                        src={product.iconUrl} 
+                        alt="Ícone botânico" 
+                        className="w-4 h-4 object-contain" 
+                      />
+                    </div>
+                  )}
+
                   {/* Saponification Badge */}
                   <div className="absolute bottom-3 left-3">
                     <span className="inline-flex items-center gap-1 px-2.5 py-1 rounded-lg bg-[#2C2723]/80 backdrop-blur-xs text-white text-[10px] font-medium">

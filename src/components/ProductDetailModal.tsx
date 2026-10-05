@@ -158,9 +158,18 @@ export const ProductDetailModal: React.FC<ProductDetailModalProps> = ({
                   <span className="text-xs text-gray-500">({product.reviewsCount} avaliações de clientes)</span>
                 </div>
 
-                <h2 className="font-serif text-2xl sm:text-3xl font-bold text-[#2C2723] leading-tight">
-                  {product.name}
-                </h2>
+                <div className="flex items-center gap-2.5">
+                  {product.iconUrl && (
+                    <img 
+                      src={product.iconUrl} 
+                      alt="Ícone botânico do produto" 
+                      className="w-8 h-8 object-contain rounded-xl border border-[#D4A373]/40 p-1 bg-white shadow-2xs shrink-0" 
+                    />
+                  )}
+                  <h2 className="font-serif text-2xl sm:text-3xl font-bold text-[#2C2723] leading-tight">
+                    {product.name}
+                  </h2>
+                </div>
                 
                 <p className="text-xs sm:text-sm text-[#8C6D53] font-medium mt-1">
                   {product.tagline}

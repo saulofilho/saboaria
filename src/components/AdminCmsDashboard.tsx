@@ -465,19 +465,36 @@ export const AdminCmsDashboard: React.FC<AdminCmsDashboardProps> = ({
                     return (
                       <tr key={product.id} className="hover:bg-[#FAF7F2] transition-colors group">
                         
-                        {/* Product info with image */}
+                        {/* Product info with image and icon */}
                         <td className="py-3.5 px-4">
                           <div className="flex items-center gap-3">
-                            <img
-                              src={product.images?.[0] || 'https://images.unsplash.com/photo-1607006310492-97214953932e?auto=format&fit=crop&w=200&q=80'}
-                              alt={product.name}
-                              referrerPolicy="no-referrer"
-                              className="w-12 h-12 rounded-xl object-cover border border-[#D4A373]/30 shrink-0"
-                            />
+                            <div className="relative shrink-0">
+                              <img
+                                src={product.images?.[0] || 'https://images.unsplash.com/photo-1607006310492-97214953932e?auto=format&fit=crop&w=200&q=80'}
+                                alt={product.name}
+                                referrerPolicy="no-referrer"
+                                className="w-12 h-12 rounded-xl object-cover border border-[#D4A373]/30 shrink-0"
+                              />
+                              {product.iconUrl && (
+                                <img
+                                  src={product.iconUrl}
+                                  alt="Ícone"
+                                  className="w-4 h-4 rounded-full bg-white/95 p-0.5 border border-[#5C6B47]/50 absolute -bottom-1 -right-1 shadow-xs object-contain"
+                                  title={`Ícone: ${product.iconUrl}`}
+                                />
+                              )}
+                            </div>
                             <div>
-                              <h4 className="font-serif font-bold text-sm text-[#2C2723] group-hover:text-[#5C6B47] transition-colors">
-                                {product.name}
-                              </h4>
+                              <div className="flex items-center gap-1.5">
+                                <h4 className="font-serif font-bold text-sm text-[#2C2723] group-hover:text-[#5C6B47] transition-colors">
+                                  {product.name}
+                                </h4>
+                                {product.iconUrl && (
+                                  <span className="text-[9px] px-1.5 py-0.2 bg-[#FAF7F2] text-[#5C6B47] border border-[#5C6B47]/30 rounded font-mono">
+                                    icon
+                                  </span>
+                                )}
+                              </div>
                               <p className="text-[11px] text-[#8C7E74] line-clamp-1 max-w-xs">
                                 {product.tagline}
                               </p>
@@ -651,6 +668,19 @@ export const AdminCmsDashboard: React.FC<AdminCmsDashboardProps> = ({
                       }`}>
                         {stk > 10 ? `${stk} un.` : stk > 0 ? `Restam ${stk}` : 'Esgotado'}
                       </span>
+                      {product.iconUrl && (
+                        <div 
+                          className="absolute bottom-2 left-2 bg-white/95 backdrop-blur-xs px-2 py-1 rounded-xl border border-[#D4A373]/40 shadow-xs flex items-center gap-1.5"
+                          title={`Caminho do Ícone: ${product.iconUrl}`}
+                        >
+                          <img 
+                            src={product.iconUrl} 
+                            alt="Ícone" 
+                            className="w-3.5 h-3.5 object-contain" 
+                          />
+                          <span className="text-[10px] font-mono text-[#5C6B47] font-semibold">ícone</span>
+                        </div>
+                      )}
                     </div>
 
                     {/* Card Content */}

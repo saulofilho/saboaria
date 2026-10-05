@@ -41,6 +41,7 @@ export const INITIAL_PRODUCTS: SoapProduct[] = [
       'https://images.unsplash.com/photo-1600857544200-b2f666a9a2ec?auto=format&fit=crop&w=800&q=80',
       'https://images.unsplash.com/photo-1546554137-f86b9593a222?auto=format&fit=crop&w=800&q=80'
     ],
+    iconUrl: '/icon.svg',
     stock: 24,
     isBestseller: true
   },
@@ -81,6 +82,7 @@ export const INITIAL_PRODUCTS: SoapProduct[] = [
       'https://images.unsplash.com/photo-1590439471364-192aa70c0b53?auto=format&fit=crop&w=800&q=80',
       'https://images.unsplash.com/photo-1584308666744-24d5c474f2ae?auto=format&fit=crop&w=800&q=80'
     ],
+    iconUrl: '/favicon.svg',
     stock: 18,
     isBestseller: true
   },
@@ -122,6 +124,7 @@ export const INITIAL_PRODUCTS: SoapProduct[] = [
       'https://images.unsplash.com/photo-1608248597359-0091807d9b9c?auto=format&fit=crop&w=800&q=80',
       'https://images.unsplash.com/photo-1547793548-710ec861bb6e?auto=format&fit=crop&w=800&q=80'
     ],
+    iconUrl: '/icon.svg',
     stock: 31,
     isBestseller: true
   },

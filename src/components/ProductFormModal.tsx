@@ -104,6 +104,7 @@ export const ProductFormModal: React.FC<ProductFormModalProps> = ({
     'https://images.unsplash.com/photo-1607006310492-97214953932e?auto=format&fit=crop&w=800&q=80'
   ]);
   const [newImageUrl, setNewImageUrl] = useState('');
+  const [iconUrl, setIconUrl] = useState<string>('');
 
   // Badges
   const [isBestseller, setIsBestseller] = useState(false);
@@ -138,6 +139,7 @@ export const ProductFormModal: React.FC<ProductFormModalProps> = ({
       setIngredients(initialProduct.ingredients || []);
       setBotanicalBenefits(initialProduct.botanicalBenefits || []);
       setImages(initialProduct.images && initialProduct.images.length > 0 ? initialProduct.images : [BOTANICAL_PHOTO_PRESETS[0].url]);
+      setIconUrl(initialProduct.iconUrl || '');
       
       setIsBestseller(!!initialProduct.isBestseller);
       setIsNew(!!initialProduct.isNew);
@@ -162,6 +164,7 @@ export const ProductFormModal: React.FC<ProductFormModalProps> = ({
       setIngredients(['Azeite de Oliva Extra Virgem', 'Manteiga de Karité Orgânica', 'Óleo de Coco Palmiste']);
       setBotanicalBenefits(['Acalma e nutre a pele sensível', 'Toque macio e espuma densa']);
       setImages([BOTANICAL_PHOTO_PRESETS[0].url]);
+      setIconUrl('/icon.svg');
       setIsBestseller(false);
       setIsNew(true);
       setIsSeasonal(false);
@@ -284,6 +287,7 @@ export const ProductFormModal: React.FC<ProductFormModalProps> = ({
       saponificationProcess,
       curingTimeWeeks: Number(curingTimeWeeks) || 5,
       images,
+      iconUrl: iconUrl.trim() || undefined,
       isBestseller,
       isNew,
       isSeasonal,
@@ -867,6 +871,79 @@ export const ProductFormModal: React.FC<ProductFormModalProps> = ({
                         <Trash2 className="w-3.5 h-3.5" />
                       </button>
                     </div>
+                  ))}
+                </div>
+              </div>
+
+              {/* Product Icon URL Path Section */}
+              <div className="space-y-3 pt-4 border-t border-[#D4A373]/30 bg-[#FAF7F2] p-4 rounded-2xl border">
+                <div className="flex items-center justify-between">
+                  <div>
+                    <label className="block text-xs font-bold uppercase tracking-wider text-[#4A3E39] flex items-center gap-1.5">
+                      <Sparkles className="w-3.5 h-3.5 text-[#5C6B47]" />
+                      <span>Caminho / URL do Ícone do Produto (Icon URL Path)</span>
+                    </label>
+                    <p className="text-[11px] text-[#8C7E74]">
+                      Caminho do ícone vetorial SVG ou imagem miniatura para selos, navegação e identificador botânico.
+                    </p>
+                  </div>
+                  {iconUrl && (
+                    <div className="flex items-center gap-2 bg-white px-2.5 py-1 rounded-xl border border-[#D4A373]/40 shadow-2xs">
+                      <span className="text-[10px] text-[#8C7E74] font-medium">Prévia:</span>
+                      <img 
+                        src={iconUrl} 
+                        alt="Prévia do Ícone" 
+                        className="w-6 h-6 object-contain rounded-md border border-[#D4A373]/30 p-0.5 bg-[#FAF7F2]" 
+                        onError={(e) => {
+                          (e.target as HTMLElement).style.display = 'none';
+                        }}
+                      />
+                    </div>
+                  )}
+                </div>
+
+                <div className="flex gap-2">
+                  <input
+                    type="text"
+                    placeholder="/icon.svg ou https://..."
+                    value={iconUrl}
+                    onChange={(e) => setIconUrl(e.target.value)}
+                    className="flex-1 px-4 py-2 rounded-xl bg-white border border-[#D4A373]/40 text-xs text-[#2C2723] focus:outline-none focus:border-[#5C6B47] font-mono"
+                  />
+                  {iconUrl && (
+                    <button
+                      type="button"
+                      onClick={() => setIconUrl('')}
+                      className="px-3 py-2 bg-gray-200 hover:bg-gray-300 text-gray-700 rounded-xl text-xs font-medium transition-colors"
+                      title="Limpar ícone"
+                    >
+                      Limpar
+                    </button>
+                  )}
+                </div>
+
+                {/* Quick Icon Presets */}
+                <div className="flex flex-wrap items-center gap-2 pt-1">
+                  <span className="text-[11px] text-[#8C7E74] font-medium">Sugestões de caminhos:</span>
+                  {[
+                    { label: '🌿 /icon.svg (Padrão)', path: '/icon.svg' },
+                    { label: '🧼 /favicon.svg', path: '/favicon.svg' },
+                    { label: '🌸 Lavanda', path: 'https://images.unsplash.com/photo-1607006310492-97214953932e?auto=format&fit=crop&w=120&q=80' },
+                    { label: '🌹 Argila Rosa', path: 'https://images.unsplash.com/photo-1590439471364-192aa70c0b53?auto=format&fit=crop&w=120&q=80' },
+                    { label: '🌱 Capim-Limão', path: 'https://images.unsplash.com/photo-1546554137-f86b9593a222?auto=format&fit=crop&w=120&q=80' }
+                  ].map((preset, pIdx) => (
+                    <button
+                      key={pIdx}
+                      type="button"
+                      onClick={() => setIconUrl(preset.path)}
+                      className={`text-[10px] px-2.5 py-1 rounded-lg border transition-all ${
+                        iconUrl === preset.path
+                          ? 'bg-[#5C6B47] text-white border-[#5C6B47] font-bold'
+                          : 'bg-white text-[#4A3E39] border-[#D4A373]/30 hover:border-[#5C6B47]'
+                      }`}
+                    >
+                      {preset.label}
+                    </button>
                   ))}
                 </div>
               </div>

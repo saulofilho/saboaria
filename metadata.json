@@ -2,5 +2,6 @@
   "name": "Ateliê Botânico - Saboaria Artesanal & Cursos",
   "description": "Loja e ateliê de saboaria artesanal com CMS administrativo para gestão e edição completa de produtos, catálogo botânico, personalizador sob medida, controle de estoque e tutoriais.",
   "requestFramePermissions": [],
-  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"],
+  "iconUrl": "/icon.svg"
 }

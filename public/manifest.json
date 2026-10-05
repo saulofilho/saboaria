@@ -1,0 +1,23 @@
+{
+  "name": "Ateliê Botânico — Saboaria Artesanal & Cursos",
+  "short_name": "Ateliê Botânico",
+  "description": "Saboaria artesanal botânica 100% natural, pedidos personalizados sob medida, guia de ingredientes fitoterápicos e escola online de saboaria com tutoriais em vídeo.",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#FAF7F2",
+  "theme_color": "#5C6B47",
+  "icons": [
+    {
+      "src": "/icon.svg",
+      "sizes": "any",
+      "type": "image/svg+xml",
+      "purpose": "any"
+    },
+    {
+      "src": "/favicon.svg",
+      "sizes": "any",
+      "type": "image/svg+xml",
+      "purpose": "maskable"
+    }
+  ]
+}
